@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Pizza Hoot Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Pizza Hoot Regular'), url('PizzaHoot-JRawE.woff') format('woff');
+}
+
+h1{
+	font-family: 'Pizza Hoot Regular';
+	font-weight: 200;
+	font-size: 3rem;
+	color: white;
+}
