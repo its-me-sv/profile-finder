@@ -1,10 +1,28 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
+import {connect} from 'react-redux';
 import CardList from '../components/CardList';
 import SearchBox from '../components/SearchBox';
 import Scroll from '../components/Scroll';
 import './App.css';
+import {setSearchField, requestRobots} from '../actions';
 
-function App(){
+const mapStateToProps = state => {
+	return {
+		searchField: state.searchRobots.searchField,
+		robots: state.requestRobots.robots,
+		isPending: state.requestRobots.isPending,
+		error: state.requestRobots.error
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		onSearchChanged: event => dispatch(setSearchField(event.target.value)),
+		onRequestRobots: () => dispatch(requestRobots())
+	};
+};
+
+function App(props){
 	// constructor() {
 	// 	super();
 	// 	this.state = {
@@ -12,8 +30,8 @@ function App(){
 	// 		searchField: ""
 	// 	}
 	// }
-	const [robots, setRobots] = useState([]);
-	const [searchField, setSearchField] = useState("");
+	// const [robots, setRobots] = useState([]);
+	// const [searchField, setSearchField] = useState("");
 	// componentDidMount() {
 	// 	fetch("https://jsonplaceholder.typicode.com/users")
 	// 	.then(response => response.json())
@@ -21,20 +39,20 @@ function App(){
 	// }
 
 	//Alternate for componentDidMount()
-	useEffect(() => {
-		fetch("https://jsonplaceholder.typicode.com/users")
-	 	.then(response => response.json())
-	 	.then(users => setRobots(users));
-	}, []);
-
-	const onSearchChanged = (event) => {
-		setSearchField(event.target.value);
-	}
+	const {onRequestRobots} = props;
 	
+	useEffect(() => {
+		onRequestRobots();
+	}, [onRequestRobots]);
+
+	// const onSearchChanged = (event) => {
+	// 	setSearchField(event.target.value);
+	// }
+	const {searchField, onSearchChanged, robots, isPending} = props;
 	const filteredBots = robots.filter(robot => robot
 		.name.toLowerCase().includes(searchField.toLowerCase()));
 
-	return !robots.length ? <h1>Its Loading</h1> :
+	return isPending ? <h1>Its Loading</h1> :
 		 (
 			<div className="tc">
 				<h1>RoboFriends</h1>
@@ -46,4 +64,4 @@ function App(){
 		);
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
